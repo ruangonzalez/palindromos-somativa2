@@ -65,3 +65,12 @@ jobs:
             artifacts/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify Discord
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{\"content\":\"🚀 CD terminou com status: **${STATUS}** no repo **${{ github.repository }}**. Branch: **${{ github.ref_name }}**. Commit: ${{ github.sha }}\"}" \
+            "${{ secrets.DISCORD_WEBHOOK }}"
