@@ -45,3 +45,12 @@ jobs:
             .ruff_cache
             **/.pytest_cache
           if-no-files-found: ignore
+          
+      - name: Notify Discord
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{\"content\":\"GitHub Actions terminou com status: **${STATUS}** no repo **${{ github.repository }}**. Branch: **${{ github.ref_name }}**. Commit: ${{ github.sha }}\"}" \
+            "${{ secrets.DISCORD_WEBHOOK }}"
